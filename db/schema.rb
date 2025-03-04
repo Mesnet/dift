@@ -10,9 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_04_142557) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_04_151103) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "donations", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "project_id", null: false
+    t.integer "amount", null: false
+    t.string "currency", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_donations_on_project_id"
+    t.index ["user_id"], name: "index_donations_on_user_id"
+  end
 
   create_table "projects", force: :cascade do |t|
     t.string "name"
@@ -27,4 +38,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_04_142557) do
     t.datetime "updated_at", null: false
     t.index ["api_token"], name: "index_users_on_api_token", unique: true
   end
+
+  add_foreign_key "donations", "projects"
+  add_foreign_key "donations", "users"
 end
