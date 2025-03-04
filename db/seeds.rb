@@ -9,7 +9,12 @@
 #   end
 
 User.delete_all
+Project.delete_all
 
 # Create Users using the :user factory
 users = FactoryBot.create_list(:user, 10)
 puts "Created #{users.count} users."
+
+# Create Projects using the :project factory
+projects = FactoryBot.create_list(:project, 5)
+puts "Created #{projects.count} projects."
