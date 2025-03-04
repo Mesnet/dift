@@ -7,3 +7,9 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+
+User.delete_all
+
+# Create Users using the :user factory
+users = FactoryBot.create_list(:user, 10)
+puts "Created #{users.count} users."
