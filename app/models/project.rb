@@ -1,3 +1,4 @@
 class Project < ApplicationRecord
-  validates :name, presence: true
+	has_many :donations
+	validates :name, presence: true
 end
