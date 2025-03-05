@@ -1,9 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe "Donations API", type: :request do
+  let(:user) { create(:user) }
+  let(:project) { create(:project) }
+
   describe "POST /api/donations" do
-    let(:user) { create(:user) }
-    let(:project) { create(:project) }
     let(:valid_params) do
       {
         donation: {
@@ -39,6 +40,25 @@ RSpec.describe "Donations API", type: :request do
         post "/api/donations", params: valid_params, headers: { "Authorization" => "invalid" }
         expect(response).to have_http_status(:unauthorized)
       end
+    end
+  end
+
+  describe "GET /api/donations/total" do
+    let!(:donation1) { create(:donation, user: user, project: project, amount: 1000, currency: "USD") }
+    let!(:donation2) { create(:donation, user: user, project: project, amount: 2000, currency: "USD") }
+
+    it "returns total donations in requested currency in cents" do
+      allow_any_instance_of(ExchangeRateService).to receive(:fetch_rate)
+        .with("USD", "EUR").and_return(0.9)
+
+      get "/api/donations/total",
+        params: { currency: "EUR" },
+        headers: { "Authorization" => user.api_token }
+
+      expect(response).to have_http_status(:ok)
+      json = JSON.parse(response.body)
+      expect(json["total"]).to eq(2700)
+      expect(json["currency"]).to eq("EUR")
     end
   end
 end
