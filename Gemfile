@@ -6,6 +6,8 @@ gem "rails", "~> 8.0.1"
 gem "propshaft"
 # Use postgresql as the database for Active Record
 gem "pg", "~> 1.1"
+# use sqlite3 as the database for solid trifecta
+gem "sqlite3", "~> 2.0", ">= 2.0.2"
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
@@ -31,6 +33,9 @@ gem "kamal", require: false
 # Add HTTP asset caching/compression and X-Sendfile acceleration to Puma [https://github.com/basecamp/thruster/]
 gem "thruster", require: false
 
+# HTTP client library for making API requests [https://github.com/lostisland/faraday]
+gem "faraday"
+
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 
@@ -47,6 +52,8 @@ group :development, :test do
   gem "rspec-rails"     # RSpec for testing
   gem "factory_bot_rails" # Factory Bot for test data
   gem "service_actor"
+  gem "webmock"
+  gem "pry"
 end
 
 group :development do

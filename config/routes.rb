@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
   namespace :api do
-    resources :donations, only: [ :create ]
+    resources :donations, only: [ :create ] do
+      collection do
+        get :total
+      end
+    end
   end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
