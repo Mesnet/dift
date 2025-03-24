@@ -3,6 +3,7 @@ Rails.application.routes.draw do
     resources :donations, only: [ :create ] do
       collection do
         get :total
+        post :batch
       end
     end
   end

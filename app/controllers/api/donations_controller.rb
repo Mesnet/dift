@@ -17,6 +17,25 @@ class Api::DonationsController < Api::BaseController
     render json: { error: e.message }, status: :unprocessable_entity
   end
 
+  def batch
+    service = DonationBatchService.new(
+      user: @current_user,
+      donations_params: params[:donations]
+    )
+    service.call
+    render json: { message: "Donations recorded successfully" }, status: :created
+
+  rescue DonationBatchService::TooManyDonationsError => e
+    render json: { error: e.message }, status: :bad_request
+
+  rescue DonationBatchService::InvalidProjectIdsError => e
+    render json: { error: "Some project_ids are invalid", invalid_ids: e.invalid_ids }, status: :unprocessable_entity
+
+  rescue DonationBatchService::ValidationError => e
+    render json: { error: "Validation failed", details: e.errors }, status: :unprocessable_entity
+  end
+
+
   private
 
   def donation_params
