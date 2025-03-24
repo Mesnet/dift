@@ -10,15 +10,11 @@ class Api::DonationsController < Api::BaseController
 
   def total
     requested_currency = params[:currency] || "EUR"
-    total_cents = DonationTotalService.new(
-      user: current_user,
-      currency: requested_currency
-    ).call
-
-    render json: {
-      total: total_cents,
-      currency: requested_currency
-    }, status: :ok
+    service = DonationTotalService.new(user: @current_user, currency: requested_currency)
+    total = service.call
+    render json: { total: total, currency: params[:currency] }
+  rescue DonationTotalService::ExchangeRateFetchError => e
+    render json: { error: e.message }, status: :unprocessable_entity
   end
 
   private

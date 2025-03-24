@@ -43,13 +43,13 @@ RSpec.describe DonationTotalService do
     context "when fetch_rate returns nil (failed conversion)" do
       let!(:donation) { create(:donation, user: user, amount: 1000, currency: "USD") }
 
-      it "treats that donation as 0" do
+      it "raises an ExchangeRateFetchError" do
         allow_any_instance_of(ExchangeRateService).to receive(:fetch_rate)
           .with("USD", "EUR").and_return(nil)
 
-        total_cents = described_class.new(user: user, currency: "EUR").call
-        # Since rate is nil, that donation effectively becomes 0
-        expect(total_cents).to eq(0)
+        expect {
+          described_class.new(user: user, currency: "EUR").call
+        }.to raise_error(DonationTotalService::ExchangeRateFetchError, /Unable to fetch exchange rate/)
       end
     end
   end

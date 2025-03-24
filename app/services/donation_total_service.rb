@@ -1,6 +1,8 @@
 # app/services/donation_total_service.rb
 
 class DonationTotalService
+  class ExchangeRateFetchError < StandardError; end
+
   def initialize(user:, currency:)
     @user = user
     @currency = currency
@@ -22,7 +24,7 @@ class DonationTotalService
       donation.amount
     else
       rate = @exchange_service.fetch_rate(donation.currency, @currency)
-      return 0 unless rate
+      raise ExchangeRateFetchError, "Unable to fetch exchange rate from #{donation.currency} to #{@currency}" unless rate
 
       (donation.amount * rate).round
     end
